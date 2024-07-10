@@ -33,7 +33,7 @@ class WorkerQueue:
 
     def enqueue(self, job):
         """Place another job at the end of the queue."""
-        job.enqueue(self.jobs[-1] if self.jobs else None)
+        job.enqueue(self.jobs[-1] if self.jobs else None, self.attributes["performance"])
         self.jobs.append(job)
 
     def advance_time(self, ts):

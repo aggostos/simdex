@@ -29,13 +29,13 @@ class Job:
     start_ts: float = 0.0  # when the processing of the job actually started (simulation time)
     finish_ts: float = 0.0  # when the processing ended (start_ts + duration by default)
 
-    def enqueue(self, prev_job=None):
+    def enqueue(self, prev_job=None, worker_performance=1):
         """Update start and finish times when the job is placed in a queue."""
         if prev_job is None:
             self.start_ts = self.spawn_ts  # job starts immediately as spawned
         else:
             self.start_ts = prev_job.finish_ts  # job starts right after previous job ends
-        self.finish_ts = self.start_ts + self.duration
+        self.finish_ts = self.start_ts + self.duration / worker_performance
 
 
 @dataclass
