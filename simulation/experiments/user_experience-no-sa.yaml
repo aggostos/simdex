@@ -11,11 +11,15 @@
 # If only a number is given, the workers are initialized with no attributes at the beginning.
 workers:
   - active: true # first worker has no limit
+    performance: 1
   - active: true
+    performance: 1
     limit: 30.0
   - active: true
+    performance: 1
     limit: 30.0
   - active: true
+    performance: 1
     limit: 30.0
 
 # dispatcher component: either a string (fully qualified class name) or a collection with { class, args }

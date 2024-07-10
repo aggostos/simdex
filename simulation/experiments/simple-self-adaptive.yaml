@@ -6,9 +6,13 @@
 # If only a number is given, the workers are initialized with no attributes at the beginning.
 workers:
   - active: true
+    performance: 1
   - active: false
+    performance: 1
   - active: false
+    performance: 1
   - active: false
+    performance: 1
 
 # dispatcher component: either a string (fully qualified class name) or a collection with { class, args }
 # where class is fully qualified class name and args is list or dict holding constructor arguments
