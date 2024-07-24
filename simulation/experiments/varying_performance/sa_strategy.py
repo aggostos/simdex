@@ -32,10 +32,19 @@ class CategorySelfAdaptingStrategy(AbstractSelfAdaptingStrategy):
             estimate = dispatcher.duration_index.estimate_duration(job.exercise_id, job.runtime_id)
             actual = job.finish_ts - job.start_ts
 
-            alpha = 0.9999            
+            alpha = 0.9     
             if self.perfs[job.worker_id] == 1:
                 self.perfs[job.worker_id] = (estimate / actual)
             else:
                 self.perfs[job.worker_id] = self.perfs[job.worker_id] * alpha + (estimate / actual) * (1 - alpha)
 
+            best = sorted(zip(range(4), self.perfs), key=lambda x: x[1], reverse=True)            
+
+            for i, w in enumerate(workers):
+                if i == best[3][0]:
+                    w.set_attribute("limit", 30)
+                    continue
+                w.set_attribute("limit", 10000)
+            
+            #print(self.perfs)
             dispatcher.update_performances(self.perfs)

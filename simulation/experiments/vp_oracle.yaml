@@ -13,13 +13,17 @@
 # If only a number is given, the workers are initialized with no attributes at the beginning.
 workers:
   - active: true # first worker has no limit
-    performance: 1
+    performance: 0.5
+    limit: 10000
   - active: true
-    performance: 2
+    performance: 1.5
+    limit: 10000
   - active: true
-    performance: 3
+    performance: 1.5
+    limit: 10000
   - active: true
     performance: 4
+    limit: 10000
 
 # dispatcher component: either a string (fully qualified class name) or a collection with { class, args }
 # where class is fully qualified class name and args is list or dict holding constructor arguments
@@ -28,7 +32,7 @@ dispatcher: experiments.varying_performance.dispatcher.OracleJobCategoryDispatch
 sa_strategy:
   class: experiments.varying_performance.sa_strategy.CategorySelfAdaptingStrategy
   args:
-    - 6  # max. number of long worker queues
+    - 2  # max. number of long worker queues
     - "@@ref_jobs"
 period: 60  # in seconds, how often a sa strategy (MAPE-K loop) is invoked
 

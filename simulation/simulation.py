@@ -121,8 +121,9 @@ class Simulation:
                 self.sa_strategy.do_adapt(self.ts, self.dispatcher, self.workers, job)                
         else:
             # let's wrap up the simulation
-            end_ts = self.ts
-            for worker in self.workers:
+            end_ts = self.ts            
+            for i, worker in enumerate(self.workers):
+                print(f"Worker {i}, number of jobs: {worker.num_jobs}\t active time: {int(worker.active_time)}")
                 worker_end_ts = worker.get_finish_ts()
                 if worker_end_ts:
                     end_ts = max(end_ts, worker.get_finish_ts())

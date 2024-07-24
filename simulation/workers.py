@@ -11,6 +11,8 @@ class WorkerQueue:
         self.jobs = []
         self.attributes = attributes
         self.id = id
+        self.num_jobs = 0
+        self.active_time = 0
 
     def get_attribute(self, name):
         """Safe getter that returns attribute of given name or None if the attribute does not exist."""
@@ -37,6 +39,9 @@ class WorkerQueue:
         job.worker_id = self.id
         job.enqueue(self.jobs[-1] if self.jobs else None, self.attributes["performance"])
         self.jobs.append(job)
+
+        self.num_jobs += 1
+        self.active_time += job.duration / self.attributes["performance"]
 
     def advance_time(self, ts):
         """Advance time to a certain timestamp. Finished jobs are removed from the queue and returned."""
