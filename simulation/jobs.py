@@ -25,6 +25,8 @@ class Job:
     compilation_ok: bool  # True if the solution passed compilation, False means that no test were actually executed
     duration: float  # how long the job took (according to logs)
 
+    worker_id: int = 0
+
     # extra fields filled by the simulation
     start_ts: float = 0.0  # when the processing of the job actually started (simulation time)
     finish_ts: float = 0.0  # when the processing ended (start_ts + duration by default)

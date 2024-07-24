@@ -35,7 +35,7 @@ class Simulation:
         self.dispatcher = _create_instance(configuration["dispatcher"], ref_jobs)
         if "sa_strategy" in configuration:
             self.sa_strategy = _create_instance(configuration["sa_strategy"], ref_jobs)
-        else:
+        else:        
             self.sa_strategy = None  # strategy can be empty (i.e., no MAPE-K) for baseline ref. measurements
 
         # how often MAPE-K is called (in seconds)
@@ -47,11 +47,11 @@ class Simulation:
 
         self.workers = []
         if isinstance(configuration["workers"], list):
-            for worker_attrs in configuration["workers"]:
-                self.workers.append(WorkerQueue(**worker_attrs))
+            for i, worker_attrs in enumerate(configuration["workers"]):
+                self.workers.append(WorkerQueue(i, **worker_attrs))
         else:
             for i in range(int(configuration["workers"])):
-                self.workers.append(WorkerQueue())
+                self.workers.append(WorkerQueue(i))
 
         # remaining simulation variables
         self.ts = 0.0  # simulation time
@@ -116,9 +116,9 @@ class Simulation:
         if job:
             # regular simulation step
             self.__advance_time(job.spawn_ts)
-            if self.sa_strategy:  # run SA out of order (instantly, just before a job is dispatched)
-                self.sa_strategy.do_adapt(self.ts, self.dispatcher, self.workers, job)
             self.dispatcher.dispatch(job, self.workers)
+            if self.sa_strategy:  # run SA out of order (instantly, just before a job is dispatched)                
+                self.sa_strategy.do_adapt(self.ts, self.dispatcher, self.workers, job)                
         else:
             # let's wrap up the simulation
             end_ts = self.ts

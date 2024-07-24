@@ -6,10 +6,11 @@ class WorkerQueue:
     A queue is also decorated by generic attributes, which are interpreted by the job Dispatcher.
     """
 
-    def __init__(self, **attributes):
+    def __init__(self, id, **attributes):
         """The constructor gets initial attributes as named parameters."""
         self.jobs = []
         self.attributes = attributes
+        self.id = id
 
     def get_attribute(self, name):
         """Safe getter that returns attribute of given name or None if the attribute does not exist."""
@@ -33,6 +34,7 @@ class WorkerQueue:
 
     def enqueue(self, job):
         """Place another job at the end of the queue."""
+        job.worker_id = self.id
         job.enqueue(self.jobs[-1] if self.jobs else None, self.attributes["performance"])
         self.jobs.append(job)
 

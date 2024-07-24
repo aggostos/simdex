@@ -13,6 +13,7 @@ class CategorySelfAdaptingStrategy(AbstractSelfAdaptingStrategy):
         self.max_long_queues = max_long_queues
         self.ref_jobs = ref_jobs[:]
         self.ref_jobs.reverse()
+        self.perfs = [1] * 4
 
     def _update_dispatcher(self, ts, dispatcher):
         while len(self.ref_jobs) > 0 and self.ref_jobs[-1].spawn_ts + self.ref_jobs[-1].duration <= ts:
@@ -24,6 +25,17 @@ class CategorySelfAdaptingStrategy(AbstractSelfAdaptingStrategy):
         self._update_dispatcher(ts, dispatcher)
 
     def do_adapt(self, ts, dispatcher, workers, job=None):
-        self._update_dispatcher(ts, dispatcher)
-        if (job and job.compilation_ok):
+        self._update_dispatcher(ts, dispatcher)        
+        if (job and job.compilation_ok):            
             dispatcher.add_ref_job(job)
+
+            estimate = dispatcher.duration_index.estimate_duration(job.exercise_id, job.runtime_id)
+            actual = job.finish_ts - job.start_ts
+
+            alpha = 0.9999            
+            if self.perfs[job.worker_id] == 1:
+                self.perfs[job.worker_id] = (estimate / actual)
+            else:
+                self.perfs[job.worker_id] = self.perfs[job.worker_id] * alpha + (estimate / actual) * (1 - alpha)
+
+            dispatcher.update_performances(self.perfs)
